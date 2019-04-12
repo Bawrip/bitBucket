@@ -6,7 +6,7 @@ import sorter.InsertionSorter;
 
 public class Main {
     public static void main(String[] args) {
-        InsertionSorter<Integer> sorter = new InsertionSorter();
+        InsertionSorter<Integer> sorter = new InsertionSorter<>();
 
         Options options = createOptions();
         HelpFormatter formatter = new HelpFormatter();
@@ -35,7 +35,7 @@ public class Main {
         try {
             FileReader reader = new FileReader();
 
-            reader.read("unsortedFiles/testFileOne.txt");
+            reader.read("C:\\Users\\Aleksandr.Mazanov\\IdeaProjects\\bitBucket\\src\\main\\resources\\unsortedFiles\\");
         } catch (Exception exc) {
             System.err.println("Happens some shit " + exc);
             exc.printStackTrace();
