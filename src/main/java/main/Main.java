@@ -4,6 +4,9 @@ import org.apache.commons.cli.*;
 import reader.FileReader;
 import sorter.InsertionSorter;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 public class Main {
     public static void main(String[] args) {
         InsertionSorter<Integer> sorter = new InsertionSorter<>();
@@ -30,7 +33,7 @@ public class Main {
 
         Integer[] array = {1, 4, 2, 6, 3, 5, 5, 9};
 
-        sorter.sort(array);
+        sorter.sort(new ArrayList<>(Arrays.asList(array)));
 
         try {
             FileReader reader = new FileReader();
