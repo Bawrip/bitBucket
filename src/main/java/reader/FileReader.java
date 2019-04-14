@@ -6,44 +6,27 @@ import exception.ApplicationException;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
 
-public class FileReader<T extends Comparable<? super T>> {
-
-    public void read(String path) throws ApplicationException {
-
-        try {
-            File directoryOrFile = new File(path);
-
-            if (directoryOrFile.isDirectory()) {
-                String[] files = directoryOrFile.list();
-
-                for (String file : files) {
-                    readFile(path + "\\" + file);
-                }
-            }
-        } catch (Exception exc) {
-            throw new ApplicationException("Директория не найдена либо не содержит файлов");
-        }
-
-    }
-
-    private void readFile(String filePath) throws FileNotFoundException {
-        String[] array = new String[100];
+public class FileReader {
+    public ArrayList<String> getDataFromFile(String filePath) throws ApplicationException {
+        ArrayList<String> array = new ArrayList<>();
 
         File file = new File(filePath);
 
         if (file.isDirectory()) {
-            return;
+            throw new ApplicationException("Из файла нельзя извлечь данные, так как это директория");
         }
 
         try (Scanner scanner = new Scanner(file)) {
-            for (int i = 0; scanner.hasNext(); i++) {
-                array[i] = scanner.next();
+            while (scanner.hasNext()) {
+                array.add(scanner.next());
             }
+            return array;
+        } catch (FileNotFoundException exc) {
+            throw new ApplicationException("Файл " + filePath + " не найден.");
         }
-
-        System.out.println(Arrays.toString(array));
     }
 }

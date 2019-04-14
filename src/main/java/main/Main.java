@@ -3,14 +3,15 @@ package main;
 import org.apache.commons.cli.*;
 import reader.FileReader;
 import sorter.InsertionSorter;
+import sorter.SortOrder;
+import utils.Converter;
+import utils.DirectoryReaderUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Main {
     public static void main(String[] args) {
-        InsertionSorter<Integer> sorter = new InsertionSorter<>();
-
         Options options = createOptions();
         HelpFormatter formatter = new HelpFormatter();
         formatter.setWidth(120);
@@ -24,21 +25,27 @@ public class Main {
                 return;
             }
             if (commandLine.hasOption("out-prefix")) {
-                System.out.println("arg = " + commandLine.getOptionValue("out-prefix"));
+                //System.out.println("arg = " + commandLine.getOptionValue("out-prefix"));
             }
         } catch (ParseException ex) {
             formatter.printHelp("sort-it", options, true);
             return;
         }
 
-        Integer[] array = {1, 4, 2, 6, 3, 5, 5, 9};
-
-        sorter.sort(new ArrayList<>(Arrays.asList(array)));
-
         try {
+            DirectoryReaderUtils directoryReader = new DirectoryReaderUtils();
             FileReader reader = new FileReader();
+            String directoryPath = "C:\\Users\\xrvp15127\\IdeaProjects\\bitBucket\\src\\main\\resources\\unsortedFiles";
 
-            reader.read("C:\\Users\\Aleksandr.Mazanov\\IdeaProjects\\bitBucket\\src\\main\\resources\\unsortedFiles\\");
+            String[] files = directoryReader.getListOfFiles(directoryPath);
+            InsertionSorter<Integer> sorter = new InsertionSorter<>(SortOrder.ASCENDING);
+            Converter converter = new Converter();
+
+            for (String fileName : files) {
+                ArrayList<String> data = reader.getDataFromFile(directoryPath + "\\" + fileName);
+
+                sorter.sort(converter.convertFromStringToInteger(data));
+            }
         } catch (Exception exc) {
             System.err.println("Happens some shit " + exc);
             exc.printStackTrace();
@@ -54,6 +61,24 @@ public class Main {
                 .argName("outPrefix")
                 .hasArg()
                 .desc("Prefix of the output file.")
+                .build());
+
+        optionGroup.addOption(Option.builder("c")
+                .longOpt("content-type")
+                .argName("contentType")
+                .hasArg()
+                .desc("File content type. May have the following values:" +
+                        " s - String," +
+                        " i - Integer.")
+                .build());
+
+        optionGroup.addOption(Option.builder("s")
+                .longOpt("sort-mode")
+                .argName("sortMode")
+                .hasArg()
+                .desc("Sort mode. May have the following values:" +
+                        " a - ascending," +
+                        " d - descending.")
                 .build());
 
         options.addOptionGroup(optionGroup);
