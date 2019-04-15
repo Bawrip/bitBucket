@@ -14,11 +14,11 @@ public enum SortOrder {
         this.code = code;
     }
 
-    public SortOrder getSortOrderByCode(String code) throws ApplicationException {
-        if (code.equals(ASCENDING.code)) {
+    public static SortOrder getSortOrderByCode(String code) throws ApplicationException {
+        if (ASCENDING.code.equals(code)) {
             return ASCENDING;
         }
-        if (code.equals(DESCENDING.code)) {
+        if (DESCENDING.code.equals(code)) {
             return DESCENDING;
         }
 

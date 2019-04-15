@@ -1,17 +1,15 @@
 package main;
 
 import org.apache.commons.cli.*;
-import reader.FileReader;
-import sorter.InsertionSorter;
-import sorter.SortOrder;
-import utils.Converter;
-import utils.DirectoryReaderUtils;
-
-import java.util.ArrayList;
-import java.util.Arrays;
+import sorter.SorterManager;
+import utils.SorterSettings;
 
 public class Main {
     public static void main(String[] args) {
+        String sortOrder = null;
+        String contentType = null;
+        String outPrefix = null;
+
         Options options = createOptions();
         HelpFormatter formatter = new HelpFormatter();
         formatter.setWidth(120);
@@ -25,30 +23,31 @@ public class Main {
                 return;
             }
             if (commandLine.hasOption("out-prefix")) {
-                //System.out.println("arg = " + commandLine.getOptionValue("out-prefix"));
+                outPrefix =  commandLine.getOptionValue("out-prefix");
+            }
+            if (commandLine.hasOption("content-type")) {
+                contentType =  commandLine.getOptionValue("content-type");
+            }
+            if (commandLine.hasOption("sort-mode")) {
+                sortOrder =  commandLine.getOptionValue("sort-mode");
             }
         } catch (ParseException ex) {
-            formatter.printHelp("sort-it", options, true);
+            System.out.println("Incorrect parameters, should be:\n" +
+                                "\"directory path\" --out-prefix=\"any prefix\" --sort-mode=\"a or d\" --content-type=\"s or i\"");
             return;
         }
 
         try {
-            DirectoryReaderUtils directoryReader = new DirectoryReaderUtils();
-            FileReader reader = new FileReader();
-            String directoryPath = "C:\\Users\\xrvp15127\\IdeaProjects\\bitBucket\\src\\main\\resources\\unsortedFiles";
+            SorterSettings sorterSettings = new SorterSettings.SorterSettingBuilder()
+                    .setBuilderOutPrefix(outPrefix)
+                    .setBuilderSortOrder(sortOrder)
+                    .setBuilderType(contentType)
+                    .build();
 
-            String[] files = directoryReader.getListOfFiles(directoryPath);
-            InsertionSorter<Integer> sorter = new InsertionSorter<>(SortOrder.ASCENDING);
-            Converter converter = new Converter();
-
-            for (String fileName : files) {
-                ArrayList<String> data = reader.getDataFromFile(directoryPath + "\\" + fileName);
-
-                sorter.sort(converter.convertFromStringToInteger(data));
-            }
+            SorterManager sorterManager = new SorterManager(sorterSettings);
+            sorterManager.processDirectory(args[0]);
         } catch (Exception exc) {
-            System.err.println("Happens some shit " + exc);
-            exc.printStackTrace();
+            System.err.println("An exception occurred: \n" + exc.getMessage());
         }
     }
 
@@ -56,14 +55,14 @@ public class Main {
         Options options = new Options();
 
         OptionGroup optionGroup = new OptionGroup();
-        optionGroup.addOption(Option.builder("o")
+        options.addOptionGroup(new OptionGroup()).addOption(Option.builder("o")
                 .longOpt("out-prefix")
                 .argName("outPrefix")
                 .hasArg()
                 .desc("Prefix of the output file.")
                 .build());
 
-        optionGroup.addOption(Option.builder("c")
+        options.addOptionGroup(new OptionGroup()).addOption(Option.builder("c")
                 .longOpt("content-type")
                 .argName("contentType")
                 .hasArg()
@@ -72,7 +71,7 @@ public class Main {
                         " i - Integer.")
                 .build());
 
-        optionGroup.addOption(Option.builder("s")
+        options.addOptionGroup(new OptionGroup()).addOption(Option.builder("s")
                 .longOpt("sort-mode")
                 .argName("sortMode")
                 .hasArg()

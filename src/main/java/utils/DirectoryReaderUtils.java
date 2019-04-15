@@ -10,13 +10,13 @@ public class DirectoryReaderUtils {
             File directoryOrFile = new File(path);
 
             if (directoryOrFile.isDirectory()) {
-                String[] files = directoryOrFile.list();
-                return files;
+                return directoryOrFile.list();
             } else {
-                throw new ApplicationException("Данный путь не ведет в директорию.");
+                throw new ApplicationException("The specified path does not point to a directory.");
             }
         } catch (Exception exc) {
-            throw new ApplicationException("Директория не найдена либо не содержит файлов");
+            throw new ApplicationException("Incorrect start parameters, should be:\n" +
+                    "\"directory path\" --out-prefix=\"any prefix\" --sort-mode=\"a or d\" --content-type=\"s or i\"");
         }
     }
 }

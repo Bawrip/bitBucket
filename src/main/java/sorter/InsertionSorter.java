@@ -1,12 +1,10 @@
 package sorter;
 
-import exception.ApplicationException;
 import utils.ComparatorUtils;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
-public class InsertionSorter<T extends Comparable<? super T>> {
+public class InsertionSorter<T extends Comparable<? super T>> implements Sorter<T>{
     private ComparatorUtils<T> sortOrder;
 
     public InsertionSorter(SortOrder order) {
@@ -22,13 +20,13 @@ public class InsertionSorter<T extends Comparable<? super T>> {
         }
     }
 
+    @Override
     public ArrayList<T> sort(ArrayList<T> array) {
         for (int i = 1; i < array.size(); i++) {
             for (int j = i; j > 0 && sortOrder.compare(array.get(j-1), array.get(j)) < 0 ; j--) {
                 T t = array.get(j-1);
                 array.set(j-1, array.get(j));
                 array.set(j, t);
-
             }
         }
 

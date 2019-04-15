@@ -13,7 +13,7 @@ public class Converter {
                 integerArray.add(Integer.valueOf(str));
             }
         } catch (NumberFormatException exc) {
-            throw new ApplicationException("Некорректные данные в файле.");
+            throw new ApplicationException("Incorrect data in the file.");
         }
 
         return integerArray;
